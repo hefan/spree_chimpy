@@ -3,11 +3,20 @@ if Spree.user_class
 
     after_create  :subscribe
     after_destroy :unsubscribe
+    after_update :check_subscribe
     after_initialize :assign_subscription_default
 
     delegate :subscribe, :resubscribe, :unsubscribe, to: :subscription
 
   private
+    def check_subscribe
+      if self.subscribed
+        Spree::Chimpy::Subscription.new(self).subscribe
+      else
+        Spree::Chimpy::Subscription.new(self).unsubscribe
+      end
+    end
+
     def subscription
       Spree::Chimpy::Subscription.new(self)
     end

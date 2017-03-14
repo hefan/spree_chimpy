@@ -11,5 +11,6 @@ en:
         label: Email
         placeholder: Enter your email address
       subscriber:
-        success: Thanks! you've been successfully added
-        failure: There was a problem processing your sign-up
+        success: "You've been successfully subscribed"
+        unsubscribe_success: "You've been successfully unsubscribed"
+        failure: There was a problem processing your request

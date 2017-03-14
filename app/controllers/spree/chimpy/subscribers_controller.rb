@@ -1,18 +1,19 @@
 class Spree::Chimpy::SubscribersController < ApplicationController
-  respond_to :html, :json
+  respond_to :json
 
   def create
     @subscriber = Spree::Chimpy::Subscriber.where(email: subscriber_params[:email]).first_or_initialize
     @subscriber.email = subscriber_params[:email]
     @subscriber.subscribed = subscriber_params[:subscribed]
     if @subscriber.save
-      flash[:notice] = Spree.t(:success, scope: [:chimpy, :subscriber])
+      if @subscriber.subscribed
+        render json: { status: 200, msg: Spree.t(:success, scope: [:chimpy, :subscriber]) }
+      else
+        render json: { status: 200, msg: Spree.t(:unsubscribe_success, scope: [:chimpy, :subscriber]) }
+      end
     else
-      flash[:error] = Spree.t(:failure, scope: [:chimpy, :subscriber])
+      render json: { status: 500, msg: Spree.t(:failure, scope: [:chimpy, :subscriber]) }
     end
-
-    referer = request.referer || root_url # Referer is optional in request.
-    respond_with @subscriber, location: referer
   end
 
   private
